@@ -1,0 +1,51 @@
+task: detection  
+evaluator:  
+  type: CocoEvaluator  
+  iou_types: ['bbox', ]  
+  
+num_classes: 1  
+remap_mscoco_category: True  
+  
+# K折交叉验证参数  
+kfold:  
+  n_splits: 5  
+  random_seed: 42  
+  current_fold: 0  # 会被循环覆盖  
+  
+train_dataloader:   
+  type: DataLoader  
+  dataset:   
+    type: KFoldCocoDetection  
+    img_folder: /disk527/Commondisk/a804_qkf/vscodeproject/data/object_detection/Labeled/label_img 
+    ann_file: /disk527/Commondisk/a804_qkf/vscodeproject/data/object_detection/Labeled/annotations/train.json
+    return_masks: False  
+    transforms:  
+      type: Compose  
+      ops: ~  
+    n_splits: 5
+    fold: 0
+    random_seed: 42 
+  shuffle: True  
+  num_workers: 4  
+  drop_last: True   
+  collate_fn:  
+    type: BatchImageCollateFunction  
+  
+val_dataloader:  
+  type: DataLoader  
+  dataset:   
+    type: KFoldCocoDetection  # 使用相同的KFold数据集  
+    img_folder: /disk527/Commondisk/a804_qkf/vscodeproject/data/object_detection/Labeled/label_img 
+    ann_file: /disk527/Commondisk/a804_qkf/vscodeproject/data/object_detection/Labeled/annotations/train.json
+    return_masks: False  
+    transforms:  
+      type: Compose  
+      ops: ~   
+    n_splits: 5
+    fold: 0
+    random_seed: 42  
+  shuffle: False  
+  num_workers: 4  
+  drop_last: False  
+  collate_fn:  
+    type: BatchImageCollateFunction
